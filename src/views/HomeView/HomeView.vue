@@ -14,10 +14,6 @@
     <generic-modal :show="showAddTaskModal" @close="handleCancelAddTask" title="Add Task" actionLabel="Add" :handleAction="addTask">
         <input type="text" v-model="newTaskName" placeholder="Task name" /> 
     </generic-modal>
-
-    <generic-modal :show="showEditTaskModal" @close="handleCancelEditTask" title="Edit Task" actionLabel="Edit" :handleAction="editTask">
-        <input type="text" v-model="editTaskObj.name" placeholder="Task name" /> 
-    </generic-modal>
   </main>
 </template>
 
@@ -32,9 +28,7 @@ export default {
         return { 
             tasks: [],
             newTaskName: '',
-            editTaskObj: null,
             showAddTaskModal: false,
-            showEditTaskModal: false,
         };
     },
     created() {
@@ -74,12 +68,6 @@ export default {
             this.tasks.push(newTask);
             this.newTaskName = '';
         },
-        editTask() {
-            const findIndex = this.tasks.findIndex(task => task.id ===  this.editTaskObj?.id);
-            this.tasks[findIndex] = {...this.editTaskObj};
-            this.editTaskObj = null;
-            this.handleCancelEditTask();
-        }
     }
 };
 </script>
