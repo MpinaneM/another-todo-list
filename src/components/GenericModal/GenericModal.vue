@@ -1,47 +1,45 @@
 <template>
-    <div class="modal-overlay" v-if="show">
+    <div class="modal-overlay">
         <div class="modal-container">
             <div class="modal-header">
-                <span class="close" @click="closeModal">&times;</span>
                 <h2>{{ title }}</h2>
+                <div class="close" @click="closeModal">
+                    <span>&times;</span>
+                </div>
             </div>
             <div class="modal-body">
                 <slot></slot>
             </div>
             <div class="modal-footer">
                 <button @click="closeModal">Cancel</button>
-                <button @click="handleAction">{{actionLabel}}</button>
+                <button @click="handleAction">{{ actionLabel }}</button>
             </div>
         </div>
-  </div>
+    </div>
 </template>
 
 <script>
 export default {
-    name: 'GenericModal',
+    name: "GenericModal",
     props: {
-        show: {
-            type: Boolean,
-            required: true
-        },
         title: {
             type: String,
-            required: true
+            required: true,
         },
         actionLabel: {
             type: String,
-            required: true
+            required: true,
         },
         handleAction: {
             type: Function,
-            required: true
-        }
+            required: true,
+        },
     },
     methods: {
         closeModal() {
-            this.$emit('close');
-        }
-    }
+            this.$emit("close");
+        },
+    },
 };
 </script>
 
@@ -64,5 +62,37 @@ export default {
     border-radius: 4px;
     border: 1px solid black;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    height: fit-content;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.modal-body {
+    margin: 20px 0;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.modal-footer button:last-child {
+    margin-left: 10px;
+}
+
+.close span {
+    cursor: pointer;
+    padding: 8px;
+    border: 1px solid black;
+}
+
+.close span:hover {
+    background-color: lightgrey;
 }
 </style>
