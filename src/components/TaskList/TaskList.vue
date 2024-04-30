@@ -1,21 +1,18 @@
 <template>
     <div>
-        <p v-if="tasks && tasks.length === 0">
+        <p v-if="error">An error occured, please refresh page</p>
+        <p v-else-if="tasks && tasks.length === 0">
             No tasks, click "Add Task" to add a new task
         </p>
         <ul v-else>
             <li v-for="task in tasks" :key="task.id">
-                <task-item
-                    :task="task"
-                    @delete-task="deleteTask"
-                    @edit-task="handleShowEditTask(task)"
-                    @complete-task="completeTask"
-                />
+                <task-item :task="task" />
             </li>
         </ul>
     </div>
 </template>
 <script>
+import { mapActions, mapGetters } from "vuex";
 import TaskItem from "../../components/TaskItem/TaskItem.vue";
 
 export default {
@@ -23,33 +20,26 @@ export default {
     components: {
         TaskItem,
     },
-    props: {
-        tasks: {
-            type: Array,
-            required: true,
-            validator: (value) => {
-                return value.every((task) => {
-                    return (
-                        task.hasOwnProperty("id") &&
-                        typeof task.id === "number" &&
-                        task.hasOwnProperty("name") &&
-                        typeof task.name === "string" &&
-                        task.hasOwnProperty("completed") &&
-                        typeof task.completed === "boolean"
-                    );
-                });
-            },
-        },
+    data: () => ({
+        error: false,
+    }),
+    computed: {
+        ...mapGetters({
+            tasks: "getTasks",
+        }),
+    },
+    async mounted() {
+        await this.fetchTasks();
     },
     methods: {
-        deleteTask(id) {
-            this.$emit("delete-task", id);
-        },
-        handleShowEditTask(task) {
-            this.$emit("show-edit-task", task);
-        },
-        completeTask(id) {
-            this.$emit("complete-task", id);
+        ...mapActions(["FETCH_TASKS"]),
+        async fetchTasks() {
+            try {
+                await this.FETCH_TASKS();
+            } catch (error) {
+                console.log("ERROR", error);
+                this.error = true;
+            }
         },
     },
 };

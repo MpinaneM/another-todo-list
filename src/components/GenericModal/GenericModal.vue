@@ -7,10 +7,12 @@
                     <span>&times;</span>
                 </div>
             </div>
+            <!---Add this as a names slot-->
             <div class="modal-body">
                 <slot></slot>
             </div>
             <div class="modal-footer">
+                <!--Add this as a named slot-->
                 <button @click="closeModal">Cancel</button>
                 <button @click="handleAction">{{ actionLabel }}</button>
             </div>

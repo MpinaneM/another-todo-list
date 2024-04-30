@@ -1,18 +1,23 @@
 <template>
     <div class="task-item">
-        <input
-            type="checkbox"
-            v-model="task.completed"
-            class="checkbox"
-            @change="completeTask"
-        />
+        <input type="checkbox" v-model="task.completed" class="checkbox" />
         <span class="task-name">{{ task.name }}</span>
-        <button @click="editTask" class="edit-button">Edit</button>
+        <button @click="setShowEditTaskModal(true)" class="edit-button">
+            Edit
+        </button>
         <button @click="deleteTask" class="delete-button">Delete</button>
+        <edit-task-modal
+            v-if="showEditTaskModal"
+            :task="task"
+            @close="setShowEditTaskModal(false)"
+        />
     </div>
 </template>
 
 <script>
+import { mapActions } from "vuex";
+import EditTaskModal from "../../components/EditTaskModal/EditTaskModal.vue";
+
 export default {
     name: "TaskItem",
     props: {
@@ -30,33 +35,42 @@ export default {
                 );
             },
         },
-        id: {
-            type: Number,
-            required: true,
-        },
-        name: {
-            type: String,
-            required: true,
-        },
-        completed: {
-            type: Boolean,
-            required: true,
-        },
     },
-    data() {
-        return {
-            isChecked: false,
-        };
+    data: () => ({
+        showEditTaskModal: false,
+    }),
+    components: {
+        EditTaskModal,
+    },
+    watch: {
+        "task.completed"() {
+            this.updateCompletedTask({
+                taskId: this.task.id,
+                updatedTask: {
+                    completed: this.task.completed,
+                },
+            });
+        },
     },
     methods: {
-        editTask() {
-            this.$emit("edit-task", this.task.id);
+        ...mapActions(["UPDATE_TASK", "DELETE_TASK", "FETCH_TASKS"]),
+        setShowEditTaskModal(show) {
+            this.showEditTaskModal = show;
         },
-        deleteTask() {
-            this.$emit("delete-task", this.task.id);
+        async deleteTask() {
+            try {
+                await this.DELETE_TASK(this.task.id);
+                await this.FETCH_TASKS();
+            } catch (error) {
+                console.log("ERROR", error);
+            }
         },
-        completeTask() {
-            this.$emit("complete-task", this.task.id);
+        async updateCompletedTask(taskUpdate) {
+            try {
+                await this.UPDATE_TASK(taskUpdate);
+            } catch (error) {
+                console.log("ERROR", error);
+            }
         },
     },
 };

@@ -11,6 +11,7 @@
 
 <script>
 import GenericModal from "@/components/GenericModal/GenericModal.vue";
+import { mapActions } from "vuex";
 
 export default {
     components: {
@@ -22,9 +23,19 @@ export default {
         };
     },
     methods: {
-        addTask() {
-            this.$emit("add-task", this.taskName);
-            this.taskName = "";
+        ...mapActions(["ADD_TASK", "FETCH_TASKS"]),
+        async addTask() {
+            try {
+                await this.ADD_TASK({
+                    name: this.taskName.trim(),
+                    completed: false,
+                });
+                await this.FETCH_TASKS();
+            } catch (error) {
+                console.log("ERROR", error);
+            } finally {
+                this.taskName = "";
+            }
         },
         cancelAddTask() {
             this.$emit("close");

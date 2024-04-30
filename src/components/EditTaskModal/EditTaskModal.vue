@@ -5,12 +5,18 @@
         :handleAction="editTask"
         @close="cancelEditTask"
     >
-        <input type="text" v-model="task.name" placeholder="Task name" />
+        <input
+            type="text"
+            :value="task.name"
+            ref="taskName"
+            placeholder="Task name"
+        />
     </GenericModal>
 </template>
 
 <script>
 import GenericModal from "@/components/GenericModal/GenericModal.vue";
+import { mapActions } from "vuex";
 
 export default {
     components: {
@@ -33,12 +39,22 @@ export default {
         },
     },
     methods: {
-        editTask() {
-            this.$emit("edit-task", this.task);
-            this.$emit("close");
+        ...mapActions(["UPDATE_TASK", "FETCH_TASKS"]),
+        async editTask() {
+            try {
+                await this.UPDATE_TASK({
+                    taskId: this.task.id,
+                    updatedTask: {
+                        name: this.$refs.taskName.value.trim(),
+                    },
+                });
+                this.$emit("close");
+                await this.FETCH_TASKS();
+            } catch (error) {
+                console.log("ERROR", error);
+            }
         },
         cancelEditTask() {
-            console.log("CANCEL EDIT TASK");
             this.$emit("close");
         },
     },
