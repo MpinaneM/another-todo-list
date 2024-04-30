@@ -1,11 +1,13 @@
 <template>
-    <GenericModal
-        title="Add Task"
-        actionLabel="Add"
-        :handleAction="addTask"
-        @close="cancelAddTask"
-    >
+    <GenericModal title="Add Task" actionLabel="Add" @close="cancelAddTask">
+        <template v-slot:header>
+            <h3>Add Task</h3>
+        </template>
         <input type="text" v-model="taskName" placeholder="Task name" />
+        <template v-slot:footer>
+            <button @click="cancelAddTask">Cancel</button>
+            <button @click="addTask">Add</button>
+        </template>
     </GenericModal>
 </template>
 
@@ -23,14 +25,17 @@ export default {
         };
     },
     methods: {
-        ...mapActions(["ADD_TASK", "FETCH_TASKS"]),
+        ...mapActions({
+            addTaskAction: "ADD_TASK",
+            fetchTasksAction: "FETCH_TASKS",
+        }),
         async addTask() {
             try {
-                await this.ADD_TASK({
+                await this.addTaskAction({
                     name: this.taskName.trim(),
                     completed: false,
                 });
-                await this.FETCH_TASKS();
+                await this.fetchTasksAction();
             } catch (error) {
                 console.log("ERROR", error);
             } finally {

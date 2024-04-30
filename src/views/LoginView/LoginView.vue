@@ -1,97 +1,40 @@
 <template>
     <div class="login-view">
-        <h1>{{ heading }}</h1>
-        <p v-if="hasIncorrectCredentials">
-            Username and/or password are incorrect, please try again
-        </p>
-        <p v-if="error">
-            {{ error }}
-        </p>
-        <form @submit.prevent="submitLogin">
-            <div>
-                <label for="email">Email:</label>
-                <input type="text" id="email" v-model="email" required />
-            </div>
-            <div>
-                <label for="password">Password:</label>
-                <input
-                    type="password"
-                    id="password"
-                    v-model="password"
-                    required
-                />
-            </div>
-            <div v-if="mode === 'signup'">
-                <label for="confirm_password">Confirm password:</label>
-                <input
-                    type="confirm_password"
-                    id="password"
-                    v-model="confirm_password"
-                    required
-                />
-            </div>
-            <button type="submit">{{ heading }}</button>
-            <button @click="switchMode">{{ switchModeText }}</button>
-        </form>
+        <component :is="modeComponent.component" @switchMode="switchMode" />
     </div>
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import Login from "../../components/Login/Login.vue";
+import SignUp from "../../components/SignUp/SignUp.vue";
 
 export default {
+    components: {
+        Login,
+        SignUp,
+    },
     data() {
         return {
-            email: "",
-            password: "",
-            confirm_password: "",
-            hasIncorrectCredentials: false,
             mode: "login",
-            error: null,
         };
     },
     computed: {
-        heading: function () {
-            return this.mode === "login" ? "Login" : "Sign Up";
+        modeComponent: function () {
+            if (this.isLoginMode) {
+                return {
+                    component: "Login",
+                };
+            } else {
+                return {
+                    component: "SignUp",
+                };
+            }
         },
-        switchModeText: function () {
-            return this.mode === "login" ? "Sign Up Instead" : "Login Instead";
+        isLoginMode: function () {
+            return this.mode === "login";
         },
     },
     methods: {
-        ...mapActions(["login", "signup"]),
-        async submitLogin() {
-            if (
-                this.mode === "signup" &&
-                this.password !== this.confirm_password
-            ) {
-                this.hasIncorrectCredentials = true;
-                this.email = "";
-                this.password = "";
-                this.confirm_password = "";
-            } else {
-                try {
-                    this.loading = true;
-                    if (this.mode === "login") {
-                        await this.login({
-                            email: this.email,
-                            password: this.password,
-                        });
-                        this.loading = false;
-                        this.$router.push("/");
-                    } else
-                        await this.signup({
-                            email: this.email,
-                            password: this.password,
-                        });
-                    this.loading = false;
-                    this.$router.push("/");
-                } catch (error) {
-                    this.loading = false;
-                    this.error = error.message || "An error occurred";
-                }
-            }
-        },
         switchMode() {
             this.mode = this.mode === "login" ? "signup" : "login";
         },

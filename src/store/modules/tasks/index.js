@@ -1,3 +1,4 @@
+import Vue from "vue";
 import makeRequest from "../../../utils/makeRequest";
 
 const state = {
@@ -5,8 +6,12 @@ const state = {
 };
 
 const mutations = {
-    SET_TASKS(state, tasks) {
-        state.tasks = tasks;
+    SET_TASKS(state, response) {
+        const tasks = Object.keys(response)?.map((id) => ({
+            ...response[id],
+            id,
+        }));
+        Vue.set(state, "tasks", tasks);
     },
 };
 
@@ -19,14 +24,8 @@ const actions = {
                 const response = await makeRequest(
                     `https://vue-http-demo-ea18d-default-rtdb.firebaseio.com/tasks.json?auth=${idToken}&orderBy="userId"&equalTo="${userId}"`
                 );
-                const tasks = [];
-                for (const taskId in response) {
-                    tasks.push({
-                        id: taskId,
-                        ...response[taskId],
-                    });
-                }
-                commit("SET_TASKS", tasks);
+
+                commit("SET_TASKS", response);
                 resolve();
             } catch (error) {
                 reject(error);

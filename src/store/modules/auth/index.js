@@ -15,11 +15,14 @@ const mutations = {
 };
 
 const actions = {
-    signup({ commit }, payload) {
+    AUTH_USER({ commit }, payload) {
         return new Promise(async (resolve, reject) => {
             try {
+                const action =
+                    payload.mode === "signup" ? "signUp" : "signInWithPassword";
+
                 const response = await makeRequest(
-                    "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAeaS3Q7D8I4kdHicUSASXUaW4KkkQsvf8",
+                    `https://identitytoolkit.googleapis.com/v1/accounts:${action}?key=AIzaSyAeaS3Q7D8I4kdHicUSASXUaW4KkkQsvf8`,
                     "POST",
                     {
                         email: payload.email,
@@ -34,39 +37,18 @@ const actions = {
                 });
                 resolve();
             } catch (error) {
+                console.log("HERE 2", error);
                 reject(error);
             }
         });
     },
-    login({ commit }, payload) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const response = await makeRequest(
-                    "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAeaS3Q7D8I4kdHicUSASXUaW4KkkQsvf8",
-                    "POST",
-                    {
-                        email: payload.email,
-                        password: payload.password,
-                        returnSecureToken: true,
-                    }
-                );
-                commit("SET_USER", {
-                    token: response.idToken,
-                    userId: response.localId,
-                    tokenExpiration: response.expiresIn,
-                });
-                resolve();
-            } catch (error) {
-                reject(error);
-            }
-        });
-    },
-    logout({ commit }) {
+    LOGOUT({ commit }) {
         commit("SET_USER", {
             token: null,
             userId: null,
             tokenExpiration: null,
         });
+        commit("SET_TASKS", null);
     },
 };
 

@@ -1,16 +1,19 @@
 <template>
-    <GenericModal
-        title="Edit Task"
-        actionLabel="Edit"
-        :handleAction="editTask"
-        @close="cancelEditTask"
-    >
+    <GenericModal title="Edit Task" actionLabel="Edit" @close="cancelEditTask">
+        <template v-slot:header>
+            <h3>Edit Task</h3>
+        </template>
+
         <input
             type="text"
             :value="task.name"
             ref="taskName"
             placeholder="Task name"
         />
+        <template v-slot:footer>
+            <button @click="cancelEditTask">Cancel</button>
+            <button @click="editTask">Edit</button>
+        </template>
     </GenericModal>
 </template>
 
@@ -38,6 +41,7 @@ export default {
             },
         },
     },
+    //v-model getters & setter. make sure the changes value doesn't update in the parent
     methods: {
         ...mapActions(["UPDATE_TASK", "FETCH_TASKS"]),
         async editTask() {

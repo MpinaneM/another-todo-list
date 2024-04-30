@@ -2,19 +2,18 @@
     <div class="modal-overlay">
         <div class="modal-container">
             <div class="modal-header">
-                <h2>{{ title }}</h2>
+                <div>
+                    <slot name="header"></slot>
+                </div>
                 <div class="close" @click="closeModal">
                     <span>&times;</span>
                 </div>
             </div>
-            <!---Add this as a names slot-->
             <div class="modal-body">
                 <slot></slot>
             </div>
             <div class="modal-footer">
-                <!--Add this as a named slot-->
-                <button @click="closeModal">Cancel</button>
-                <button @click="handleAction">{{ actionLabel }}</button>
+                <slot name="footer"></slot>
             </div>
         </div>
     </div>
@@ -23,20 +22,6 @@
 <script>
 export default {
     name: "GenericModal",
-    props: {
-        title: {
-            type: String,
-            required: true,
-        },
-        actionLabel: {
-            type: String,
-            required: true,
-        },
-        handleAction: {
-            type: Function,
-            required: true,
-        },
-    },
     methods: {
         closeModal() {
             this.$emit("close");
@@ -84,7 +69,7 @@ export default {
     justify-content: flex-end;
 }
 
-.modal-footer button:last-child {
+.modal-footer button:not:first-child {
     margin-left: 10px;
 }
 
