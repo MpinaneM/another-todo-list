@@ -43,7 +43,7 @@ export default {
     },
     //v-model getters & setter. make sure the changes value doesn't update in the parent
     methods: {
-        ...mapActions(["UPDATE_TASK", "FETCH_TASKS"]),
+        ...mapActions(["UPDATE_TASK"]),
         async editTask() {
             try {
                 await this.UPDATE_TASK({
@@ -52,8 +52,9 @@ export default {
                         name: this.$refs.taskName.value.trim(),
                     },
                 });
+
+                this.task.name = this.$refs.taskName.value.trim();
                 this.$emit("close");
-                await this.FETCH_TASKS();
             } catch (error) {
                 console.log("ERROR", error);
             }

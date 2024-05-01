@@ -1,5 +1,10 @@
 import Vue from "vue";
-import makeRequest from "../../../utils/makeRequest";
+import {
+    deleteTask,
+    getTasks,
+    patchUpdateTask,
+    postAddTask,
+} from "../../../utils/api";
 
 const state = {
     tasks: [],
@@ -16,14 +21,15 @@ const mutations = {
 };
 
 const actions = {
+    SET_TASKS({ commit }, tasks) {
+        commit("SET_TASKS", tasks);
+    },
     FETCH_TASKS({ commit, getters }) {
         const userId = getters.getUserId;
         const idToken = getters.getToken;
         return new Promise(async (resolve, reject) => {
             try {
-                const response = await makeRequest(
-                    `https://vue-http-demo-ea18d-default-rtdb.firebaseio.com/tasks.json?auth=${idToken}&orderBy="userId"&equalTo="${userId}"`
-                );
+                const response = await getTasks(idToken, userId);
 
                 commit("SET_TASKS", response);
                 resolve();
@@ -37,11 +43,7 @@ const actions = {
         const userId = getters.getUserId;
         return new Promise(async (resolve, reject) => {
             try {
-                await makeRequest(
-                    `https://vue-http-demo-ea18d-default-rtdb.firebaseio.com/tasks.json?auth=${idToken}`,
-                    "POST",
-                    { userId, ...task }
-                );
+                await postAddTask(idToken, { userId, ...task });
                 resolve();
             } catch (error) {
                 reject(error);
@@ -52,24 +54,21 @@ const actions = {
         const idToken = getters.getToken;
         return new Promise(async (resolve, reject) => {
             try {
-                await makeRequest(
-                    `https://vue-http-demo-ea18d-default-rtdb.firebaseio.com/tasks/${taskId}.json?auth=${idToken}`,
-                    "PATCH",
-                    updatedTask
-                );
+                await patchUpdateTask(idToken, taskId, updatedTask);
                 resolve();
             } catch (error) {
                 reject(error);
             }
         });
     },
-    DELETE_TASK({ getters }, taskId) {
+    DELETE_TASK({ commit, getters }, taskId) {
         const idToken = getters.getToken;
         return new Promise(async (resolve, reject) => {
             try {
-                await makeRequest(
-                    `https://vue-http-demo-ea18d-default-rtdb.firebaseio.com/tasks/${taskId}.json?auth=${idToken}`,
-                    "DELETE"
+                await deleteTask(idToken, taskId);
+                commit(
+                    "SET_TASKS",
+                    getters.getTasks.filter((task) => task.id !== taskId)
                 );
                 resolve();
             } catch (error) {

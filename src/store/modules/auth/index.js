@@ -1,16 +1,21 @@
-import makeRequest from "../../../utils/makeRequest";
+import Vue from "vue";
+import { postAuthUser } from "../../../utils/api";
 
 const state = {
     token: null,
     userId: null,
     tokenExpiration: null,
+    authRequestErrorMessage: "",
 };
 
 const mutations = {
     ["SET_USER"](state, payload) {
-        state.token = payload.token;
-        state.userId = payload.userId;
-        state.tokenExpiration = payload.tokenExpiration;
+        Vue.set(state, "token", payload.token);
+        Vue.set(state, "userId", payload.userId);
+        Vue.set(state, "tokenExpiration", payload.tokenExpiration);
+    },
+    ["SET_AUTH_ERROR_MESSAGE"](state, error) {
+        Vue.set(state, "authRequestErrorMessage", error);
     },
 };
 
@@ -18,17 +23,10 @@ const actions = {
     AUTH_USER({ commit }, payload) {
         return new Promise(async (resolve, reject) => {
             try {
-                const action =
-                    payload.mode === "signup" ? "signUp" : "signInWithPassword";
-
-                const response = await makeRequest(
-                    `https://identitytoolkit.googleapis.com/v1/accounts:${action}?key=AIzaSyAeaS3Q7D8I4kdHicUSASXUaW4KkkQsvf8`,
-                    "POST",
-                    {
-                        email: payload.email,
-                        password: payload.password,
-                        returnSecureToken: true,
-                    }
+                const response = await postAuthUser(
+                    payload.email,
+                    payload.password,
+                    payload
                 );
                 commit("SET_USER", {
                     token: response.idToken,
@@ -37,7 +35,7 @@ const actions = {
                 });
                 resolve();
             } catch (error) {
-                console.log("HERE 2", error);
+                console.log(`${payload.mode} Error`, error);
                 reject(error);
             }
         });
@@ -50,12 +48,16 @@ const actions = {
         });
         commit("SET_TASKS", null);
     },
+    SET_AUTH_ERROR_MESSAGE({ commit }, error) {
+        commit("SET_AUTH_ERROR_MESSAGE", error);
+    },
 };
 
 const getters = {
     isLoggedIn: (state) => state.userId !== null,
     getUserId: (state) => state.userId,
     getToken: (state) => state.token,
+    getAuthErrorMessage: (state) => state.authRequestErrorMessage,
 };
 
 export default {

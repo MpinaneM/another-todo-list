@@ -1,17 +1,16 @@
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
     data() {
         return {
             email: "",
             password: "",
-            incorrectCredentialsError: "",
-            requestError: "",
+            formErrors: {},
         };
     },
     computed: {
-        hasIncorrectCredentials() {
-            return this.incorrectCredentialsError !== "";
+        hasFormErrors() {
+            return Object.keys(this.formErrors).length;
         },
         hasRequestError() {
             return this.requestError !== "";
@@ -21,14 +20,43 @@ export default {
     methods: {
         ...mapActions({
             authenticateUser: "AUTH_USER",
+            setAuthErrorMessage: "SET_AUTH_ERROR_MESSAGE",
         }),
+        checkEmptyFields({ payload, errors }) {
+            for (const key in payload) {
+                if (payload[key] === "") {
+                    errors[key] = "This field is required.";
+                }
+            }
+            return errors;
+        },
+        checkPasswordsMatch({ payload, errors }) {
+            if (
+                payload.password !== payload.confirm_password &&
+                !errors.password &&
+                !errors.confirm_password
+            ) {
+                errors["confirm_password"] = "Passwords do not match.";
+            }
+            return errors;
+        },
+        composeValidators(validators, payload) {
+            const errors = validators.reduce((errors, validator) => {
+                return validator({ payload, errors });
+            }, {});
+
+            this.formErrors = errors;
+        },
         validateForm() {
-            throw Error("Method 'validateForm' must be implemented.");
+            throw new Error("Method not implemented.");
+        },
+        clearFormErrors() {
+            this.formErrors = {};
         },
         async authUser(mode) {
             try {
                 this.validateForm();
-                if (!this.hasIncorrectCredentials) {
+                if (!this.hasFormErrors) {
                     await this.authenticateUser({
                         email: this.email,
                         password: this.password,
@@ -37,9 +65,13 @@ export default {
                     this.$router.push({ name: "home" });
                 }
             } catch (error) {
-                console.log("ERRPR", error);
-                this.requestError = error.message;
+                this.setAuthErrorMessage(
+                    "An error occurred. Please try again."
+                );
             }
         },
+    },
+    deactivated() {
+        this.clearFormErrors();
     },
 };

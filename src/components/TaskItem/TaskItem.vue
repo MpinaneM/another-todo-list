@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import EditTaskModal from "../../components/EditTaskModal/EditTaskModal.vue";
 
 export default {
@@ -42,6 +42,11 @@ export default {
     components: {
         EditTaskModal,
     },
+    computed: {
+        ...mapGetters({
+            tasks: "getTasks",
+        }),
+    },
     watch: {
         "task.completed"() {
             this.updateCompletedTask({
@@ -53,14 +58,16 @@ export default {
         },
     },
     methods: {
-        ...mapActions(["UPDATE_TASK", "DELETE_TASK", "FETCH_TASKS"]),
+        ...mapActions(["UPDATE_TASK", "DELETE_TASK"]),
         setShowEditTaskModal(show) {
             this.showEditTaskModal = show;
         },
         async deleteTask() {
             try {
                 await this.DELETE_TASK(this.task.id);
-                await this.FETCH_TASKS();
+                const indexToDelete = this.tasks.findIndex(
+                    (task) => task.id === this.task.id
+                );
             } catch (error) {
                 console.log("ERROR", error);
             }

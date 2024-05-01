@@ -1,10 +1,18 @@
 <template>
     <div class="login-view">
-        <component :is="modeComponent.component" @switchMode="switchMode" />
+        <h1>{{ modeHeading }}</h1>
+        <template v-if="authErrorMessage">
+            <p>{{ authErrorMessage }}</p>
+        </template>
+        <KeepAlive>
+            <component :is="modeComponent" @switchMode="switchMode" />
+        </KeepAlive>
+        <button @click="switchMode">{{ changeModeLabel }}</button>
     </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from "vuex";
 import Login from "../../components/Login/Login.vue";
 import SignUp from "../../components/SignUp/SignUp.vue";
 
@@ -19,15 +27,28 @@ export default {
         };
     },
     computed: {
+        ...mapGetters({
+            authErrorMessage: "getAuthErrorMessage",
+        }),
+        modeHeading: function () {
+            if (this.isLoginMode) {
+                return "Login";
+            } else {
+                return "Sign Up";
+            }
+        },
+        changeModeLabel: function () {
+            if (this.isLoginMode) {
+                return "Sign up instead";
+            } else {
+                return "Login instead";
+            }
+        },
         modeComponent: function () {
             if (this.isLoginMode) {
-                return {
-                    component: "Login",
-                };
+                return "Login";
             } else {
-                return {
-                    component: "SignUp",
-                };
+                return "SignUp";
             }
         },
         isLoginMode: function () {
@@ -35,8 +56,12 @@ export default {
         },
     },
     methods: {
+        ...mapActions({
+            setAuthErrorMessage: "SET_AUTH_ERROR_MESSAGE",
+        }),
         switchMode() {
-            this.mode = this.mode === "login" ? "signup" : "login";
+            this.setAuthErrorMessage("");
+            this.mode = this.isLoginMode ? "signup" : "login";
         },
     },
 };
