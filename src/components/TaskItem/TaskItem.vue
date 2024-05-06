@@ -1,11 +1,26 @@
 <template>
-    <div class="task-item">
-        <input type="checkbox" v-model="task.completed" class="checkbox" />
-        <span class="task-name">{{ task.name }}</span>
-        <button @click="setShowEditTaskModal(true)" class="edit-button">
+    <div
+        class="p-4 h-20 border border-gray-200 mb-4 shadow-md flex items-center rounded-md"
+    >
+        <input
+            type="checkbox"
+            v-model="task.completed"
+            class="h-4 w-4 hover:cursor-pointer"
+        />
+        <span class="ml-4 flex-grow text-base">{{ task.name }}</span>
+        <button
+            @click="setShowEditTaskModal(true)"
+            class="ml-4 w-20 bg-blue-400 text-white p-2 hover:bg-blue-500 rounded-md shadow-md"
+        >
             Edit
         </button>
-        <button @click="deleteTask" class="delete-button">Delete</button>
+
+        <button
+            @click="deleteTask"
+            class="ml-4 w-20 bg-red-600 text-white p-2 hover:bg-red-800 rounded-md shadow-md"
+        >
+            Delete
+        </button>
         <edit-task-modal
             v-if="showEditTaskModal"
             :task="task"
@@ -82,26 +97,3 @@ export default {
     },
 };
 </script>
-
-<style scoped>
-.task-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    padding: 16px;
-    border-bottom: 1px solid #ccc;
-}
-
-.checkbox {
-    margin-right: 10px;
-}
-
-.task-name {
-    flex-grow: 1;
-}
-
-.edit-button,
-.delete-button {
-    margin-left: 10px;
-}
-</style>

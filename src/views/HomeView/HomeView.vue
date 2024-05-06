@@ -1,9 +1,14 @@
 // as a stretch goal create architecture diagram for this app
 <template>
-    <main>
-        <h2>Tasks</h2>
-        <div class="add-button-container">
-            <button @click.prevent="setShowAddTask(true)">Add Task</button>
+    <main class="w-1/2 border border-solid border-gray-200 m-auto p-8">
+        <h2 class="text-2xl font-bold text-center underline">Tasks</h2>
+        <div class="justify-end flex my-6">
+            <button
+                @click.prevent="setShowAddTask(true)"
+                class="inline-block p-2 w-32 text-center text-white bg-[#41b783] hover:bg-[#247954] hover:cursor-pointer rounded-md"
+            >
+                Add Task
+            </button>
         </div>
         <task-list />
         <add-task-modal
@@ -35,17 +40,3 @@ export default {
     },
 };
 </script>
-
-<style scoped>
-main {
-    margin: 0 auto;
-    width: 50%;
-    border: 1px solid #ccc;
-}
-
-.add-button-container {
-    display: flex;
-    justify-content: flex-end;
-    padding: 16px;
-}
-</style>

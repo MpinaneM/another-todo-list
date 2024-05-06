@@ -1,13 +1,20 @@
 <template>
-    <div class="login-view">
-        <h1 class="text-5xl font-bold underline">{{ modeHeading }}</h1>
+    <div
+        class="w-1/6 border border-solid border-gray-200 rounded-lg m-auto p-6"
+    >
+        <h1 class="text-2xl font-bold text-center">{{ modeHeading }}</h1>
         <template v-if="authErrorMessage">
             <p>{{ authErrorMessage }}</p>
         </template>
         <KeepAlive>
             <component :is="modeComponent" @switchMode="switchMode" />
         </KeepAlive>
-        <button @click="switchMode">{{ changeModeLabel }}</button>
+        <p class="text-xs text-center">
+            {{ changeModeLabel }}
+            <button @click="switchMode" class="text-[#41b783] hover:underline">
+                {{ changeModeLink }}
+            </button>
+        </p>
     </div>
 </template>
 
@@ -39,9 +46,16 @@ export default {
         },
         changeModeLabel: function () {
             if (this.isLoginMode) {
-                return "Sign up instead";
+                return "Don't have an account? ";
             } else {
-                return "Login instead";
+                return "Already have an account? ";
+            }
+        },
+        changeModeLink: function () {
+            if (this.isLoginMode) {
+                return "Signup";
+            } else {
+                return "Login";
             }
         },
         modeComponent: function () {
