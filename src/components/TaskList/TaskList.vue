@@ -17,7 +17,7 @@
 </template>
 <script>
 import { mapActions, mapGetters } from "vuex";
-import TaskItem from "../../components/TaskItem/TaskItem.vue";
+import TaskItem from "@/components/TaskItem/TaskItem.vue";
 
 export default {
     name: "TaskList",

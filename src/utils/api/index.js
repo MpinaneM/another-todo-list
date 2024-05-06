@@ -1,7 +1,6 @@
-const tasksBaseUrl =
-    "https://vue-http-demo-ea18d-default-rtdb.firebaseio.com/tasks";
-const identityKitBaseUrl = "https://identitytoolkit.googleapis.com/v1/accounts";
-const apiKey = "AIzaSyAeaS3Q7D8I4kdHicUSASXUaW4KkkQsvf8";
+import { envConfig } from "@/env.config";
+
+const { tasksBaseUrl, identityKitBaseUrl, apiKey } = envConfig;
 
 async function makeRequest(uri, method = "GET", body = null) {
     try {

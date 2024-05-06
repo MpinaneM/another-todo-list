@@ -1,5 +1,5 @@
 import Vue from "vue";
-import { postAuthUser } from "../../../utils/api";
+import { postAuthUser } from "@/utils/api";
 
 const state = {
     token: null,

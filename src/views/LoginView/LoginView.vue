@@ -1,6 +1,6 @@
 <template>
     <div class="login-view">
-        <h1>{{ modeHeading }}</h1>
+        <h1 class="text-5xl font-bold underline">{{ modeHeading }}</h1>
         <template v-if="authErrorMessage">
             <p>{{ authErrorMessage }}</p>
         </template>
@@ -13,8 +13,8 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import Login from "../../components/Login/Login.vue";
-import SignUp from "../../components/SignUp/SignUp.vue";
+import Login from "@/components/Login/Login.vue";
+import SignUp from "@/components/SignUp/SignUp.vue";
 
 export default {
     components: {

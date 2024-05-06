@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import AddTaskModal from "../../components/AddTaskModal/AddTaskModal.vue";
-import TaskList from "../../components/TaskList/TaskList.vue";
+import AddTaskModal from "@/components/AddTaskModal/AddTaskModal.vue";
+import TaskList from "@/components/TaskList/TaskList.vue";
 
 // v-cloak directive to hide the content until the Vue instance is mounted
 // have a look at that

@@ -16,7 +16,7 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import EditTaskModal from "../../components/EditTaskModal/EditTaskModal.vue";
+import EditTaskModal from "@/components/EditTaskModal/EditTaskModal.vue";
 
 export default {
     name: "TaskItem",

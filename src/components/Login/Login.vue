@@ -23,8 +23,8 @@
 </template>
 
 <script>
-import authMixin from "../../utils/mixins/auth/authMixin";
-import FieldErrorMessage from "../FieldErrorMessage/FieldErrorMessage.vue";
+import authMixin from "@/utils/mixins/auth/authMixin";
+import FieldErrorMessage from "@/components/FieldErrorMessage/FieldErrorMessage.vue";
 
 export default {
     components: {

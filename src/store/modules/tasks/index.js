@@ -4,7 +4,7 @@ import {
     getTasks,
     patchUpdateTask,
     postAddTask,
-} from "../../../utils/api";
+} from "@/utils/api";
 
 const state = {
     tasks: [],

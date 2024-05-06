@@ -1,8 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import authModule from "./modules/auth";
-import tasksModule from "./modules/tasks";
-
+import authModule from "@/store/modules/auth";
+import tasksModule from "@/store/modules/tasks";
 Vue.use(Vuex);
 
 // use vue.set to make sure that the new properties are reactive
