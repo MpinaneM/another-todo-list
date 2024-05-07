@@ -1,5 +1,5 @@
 <template>
-    <div v-if="showErrorToast" class="toast">Error occurred!</div>
+    <div v-if="showErrorToast" class="toast">{{ errorToastMessage }}</div>
 </template>
 
 <script>
@@ -7,7 +7,7 @@ import { mapActions, mapGetters } from "vuex";
 
 export default {
     computed: {
-        ...mapGetters(["showErrorToast"]),
+        ...mapGetters(["showErrorToast", "errorToastMessage"]),
     },
     methods: {
         ...mapActions(["hideErrorToast"]),
@@ -17,8 +17,12 @@ export default {
             }, 3000);
         },
     },
-    mounted() {
-        this.hideErrorToastMessage();
+    watch: {
+        showErrorToast(newValue) {
+            if (newValue) {
+                this.hideErrorToastMessage();
+            }
+        },
     },
 };
 </script>
@@ -33,5 +37,6 @@ export default {
     color: white;
     padding: 10px 20px;
     border-radius: 5px;
+    z-index: 1000;
 }
 </style>

@@ -82,6 +82,9 @@ export default {
                 this.$emit("close");
             } catch (error) {
                 console.log("ERROR", error);
+                this.setErrorToastMessage(
+                    "An error occurred while updating the task"
+                );
             } finally {
                 this.loading = false;
             }

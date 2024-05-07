@@ -27,6 +27,7 @@ const store = new Vuex.Store({
             commit("SET_ERROR_TOAST_MESSAGE", message);
         },
         hideErrorToast({ commit }) {
+            console.log("HIDING ERROR TOAST");
             commit("SET_ERROR_TOAST_MESSAGE", "");
         },
     },

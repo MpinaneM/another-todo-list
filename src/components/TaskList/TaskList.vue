@@ -4,7 +4,7 @@
             <Spinner />
         </template>
         <template v-else-if="error">
-            <p>An error occurred, please refresh the page</p>
+            <p>An error occurred, please try again</p>
         </template>
         <template v-else-if="noTasksAvailable">
             <p>No tasks, click "Add Task" to add a new task</p>
