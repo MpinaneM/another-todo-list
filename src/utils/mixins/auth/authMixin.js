@@ -1,4 +1,4 @@
-import { mapActions, mapGetters } from "vuex";
+import { mapActions } from "vuex";
 
 export default {
     data() {
@@ -18,7 +18,7 @@ export default {
     },
 
     methods: {
-        ...mapActions({
+        ...mapActions("auth", {
             authenticateUser: "AUTH_USER",
             setAuthErrorMessage: "SET_AUTH_ERROR_MESSAGE",
         }),
@@ -55,6 +55,7 @@ export default {
         },
         async authUser(mode) {
             try {
+                this.setAuthErrorMessage("");
                 this.validateForm();
                 if (!this.hasFormErrors) {
                     await this.authenticateUser({

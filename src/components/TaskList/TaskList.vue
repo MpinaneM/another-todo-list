@@ -1,7 +1,10 @@
 <template>
-    <div>
-        <template v-if="error">
-            <p>An error occured, please refresh page</p>
+    <div v-cloak>
+        <template v-if="loading">
+            <Spinner />
+        </template>
+        <template v-else-if="error">
+            <p>An error occurred, please refresh the page</p>
         </template>
         <template v-else-if="noTasksAvailable">
             <p>No tasks, click "Add Task" to add a new task</p>
@@ -15,20 +18,24 @@
         </template>
     </div>
 </template>
+
 <script>
 import { mapActions, mapGetters } from "vuex";
 import TaskItem from "@/components/TaskItem/TaskItem.vue";
+import Spinner from "@/components/Spinner/Spinner.vue";
 
 export default {
     name: "TaskList",
     components: {
         TaskItem,
+        Spinner,
     },
     data: () => ({
         error: false,
+        loading: false,
     }),
     computed: {
-        ...mapGetters({
+        ...mapGetters("tasks", {
             tasks: "getTasks",
         }),
         noTasksAvailable() {
@@ -39,15 +46,21 @@ export default {
         await this.loadTasks();
     },
     methods: {
-        ...mapActions({
+        ...mapActions("tasks", {
             fetchTasks: "FETCH_TASKS",
         }),
+        ...mapActions(["setErrorToastMessage"]),
         async loadTasks() {
             try {
+                this.loading = true;
                 await this.fetchTasks();
             } catch (error) {
-                console.log("ERROR", error);
+                this.setErrorToastMessage(
+                    "An error occurred while fetching tasks"
+                );
                 this.error = true;
+            } finally {
+                this.loading = false;
             }
         },
     },

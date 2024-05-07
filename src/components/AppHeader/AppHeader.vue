@@ -2,21 +2,19 @@
     <header
         class="w-full flex p-5 h-24 border-b border-solid border-b-gray-200 bg-white mb-24"
     >
-        <nav class="grid grid-cols-3 w-full items-end">
-            <router-link to="/" class="self-center">
-                <img
-                    alt="Vue logo"
-                    class="logo"
-                    src="@/assets/logo.svg"
-                    width="48"
-                    height="48"
-                />
-            </router-link>
-            <div
-                class="w-1/4 col-span-1 flex justify-between justify-self-center"
-            >
-                <router-link :to="{ name: 'home' }">Home</router-link>
-                <router-link :to="{ name: 'about' }">About</router-link>
+        <nav class="grid grid-cols-2 w-full items-end">
+            <div class="col-span-1 flex gap-8">
+                <router-link to="/" class="self-center">
+                    <img
+                        alt="Vue logo"
+                        class="logo"
+                        src="@/assets/logo.svg"
+                        width="48"
+                        height="48"
+                    />
+                </router-link>
+                <route-link :to="{ name: 'home' }"> Home </route-link>
+                <route-link :to="{ name: 'about' }"> About </route-link>
             </div>
 
             <div class="self-end justify-self-end">
@@ -39,22 +37,26 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import RouteLink from "@/components/RouteLink/RouteLink.vue";
 
 export default {
     name: "AppHeader",
+    components: {
+        RouteLink,
+    },
     computed: {
-        ...mapGetters(["isLoggedIn"]),
+        ...mapGetters("auth", ["isLoggedIn"]),
         showLoginLogoutButton() {
-            return this.$route.path !== "/login";
+            return this.$route.name !== "login";
         },
     },
     methods: {
-        ...mapActions({
+        ...mapActions("auth", {
             logoutAction: "LOGOUT",
         }),
         logout() {
             this.logoutAction();
-            this.$router.push({ name: "about" });
+            this.$router.replace({ name: "login" });
         },
     },
 };

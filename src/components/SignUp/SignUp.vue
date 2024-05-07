@@ -44,7 +44,12 @@
                 type="submit"
                 class="w-full bg-[#41b783] p-2 mb-1 mt-2 text-white hover:bg-[#247954] hover:cursor-pointer rounded-md"
             >
-                Sign up
+                <template v-if="isLoading">
+                    <div>
+                        <Spinner :size="20" color="white" />
+                    </div>
+                </template>
+                <template v-else>Sign Up</template>
             </button>
         </form>
     </div>
@@ -53,16 +58,22 @@
 <script>
 import authMixin from "@/utils/mixins/auth/authMixin";
 import FieldErrorMessage from "@/components/FieldErrorMessage/FieldErrorMessage.vue";
+import Spinner from "@/components/Spinner/Spinner.vue";
+import { mapGetters } from "vuex";
 
 export default {
     mixins: [authMixin],
     components: {
         FieldErrorMessage,
+        Spinner,
     },
     data() {
         return {
             confirm_password: "",
         };
+    },
+    computed: {
+        ...mapGetters("auth", ["isLoading"]),
     },
     methods: {
         validateForm() {

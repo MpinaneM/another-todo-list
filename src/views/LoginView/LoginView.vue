@@ -4,7 +4,7 @@
     >
         <h1 class="text-2xl font-bold text-center">{{ modeHeading }}</h1>
         <template v-if="authErrorMessage">
-            <p>{{ authErrorMessage }}</p>
+            <p class="text-red-500 text-sm mt-4">{{ authErrorMessage }}</p>
         </template>
         <KeepAlive>
             <component :is="modeComponent" @switchMode="switchMode" />
@@ -34,7 +34,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters({
+        ...mapGetters("auth", {
             authErrorMessage: "getAuthErrorMessage",
         }),
         modeHeading: function () {
@@ -70,7 +70,7 @@ export default {
         },
     },
     methods: {
-        ...mapActions({
+        ...mapActions("auth", {
             setAuthErrorMessage: "SET_AUTH_ERROR_MESSAGE",
         }),
         switchMode() {

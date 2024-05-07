@@ -31,7 +31,12 @@
                 type="submit"
                 class="w-full bg-[#41b783] hover:bg-[#247954] hover:cursor-pointer p-2 mb-1 mt-2 text-white rounded-md"
             >
-                Login
+                <template v-if="isLoading">
+                    <div>
+                        <Spinner :size="20" color="white" />
+                    </div>
+                </template>
+                <template v-else>Login</template>
             </button>
         </form>
     </div>
@@ -40,12 +45,18 @@
 <script>
 import authMixin from "@/utils/mixins/auth/authMixin";
 import FieldErrorMessage from "@/components/FieldErrorMessage/FieldErrorMessage.vue";
+import Spinner from "@/components/Spinner/Spinner.vue";
+import { mapGetters } from "vuex";
 
 export default {
     components: {
         FieldErrorMessage,
+        Spinner,
     },
     mixins: [authMixin],
+    computed: {
+        ...mapGetters("auth", ["isLoading"]),
+    },
     methods: {
         validateForm() {
             this.composeValidators([this.checkEmptyFields], {

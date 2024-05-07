@@ -6,6 +6,7 @@ const state = {
     userId: null,
     tokenExpiration: null,
     authRequestErrorMessage: "",
+    loading: false,
 };
 
 const mutations = {
@@ -17,12 +18,16 @@ const mutations = {
     ["SET_AUTH_ERROR_MESSAGE"](state, error) {
         Vue.set(state, "authRequestErrorMessage", error);
     },
+    ["SET_LOADING"](state, payload) {
+        Vue.set(state, "loading", payload);
+    },
 };
 
 const actions = {
     AUTH_USER({ commit }, payload) {
         return new Promise(async (resolve, reject) => {
             try {
+                commit("SET_LOADING", true);
                 const response = await postAuthUser(
                     payload.email,
                     payload.password,
@@ -37,6 +42,8 @@ const actions = {
             } catch (error) {
                 console.log(`${payload.mode} Error`, error);
                 reject(error);
+            } finally {
+                commit("SET_LOADING", false);
             }
         });
     },
@@ -46,7 +53,7 @@ const actions = {
             userId: null,
             tokenExpiration: null,
         });
-        commit("SET_TASKS", null);
+        commit("SET_TASKS", []);
     },
     SET_AUTH_ERROR_MESSAGE({ commit }, error) {
         commit("SET_AUTH_ERROR_MESSAGE", error);
@@ -58,9 +65,11 @@ const getters = {
     getUserId: (state) => state.userId,
     getToken: (state) => state.token,
     getAuthErrorMessage: (state) => state.authRequestErrorMessage,
+    isLoading: (state) => state.loading,
 };
 
 export default {
+    namespaced: true,
     state,
     mutations,
     actions,

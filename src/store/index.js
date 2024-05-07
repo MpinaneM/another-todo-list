@@ -9,19 +9,31 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
     state: {
         showAddTaskModal: false,
+        errorToastMessage: "",
     },
     mutations: {
         SHOW_ADD_TASK_MODAL(state, show) {
-            state.showAddTaskModal = show;
+            Vue.set(state, "showAddTaskModal", show);
+        },
+        SET_ERROR_TOAST_MESSAGE(state, message) {
+            Vue.set(state, "errorToastMessage", message);
         },
     },
     actions: {
         showAddTaskModal({ commit }, show) {
             commit("SHOW_ADD_TASK_MODAL", show);
         },
+        setErrorToastMessage({ commit }, message) {
+            commit("SET_ERROR_TOAST_MESSAGE", message);
+        },
+        hideErrorToast({ commit }) {
+            commit("SET_ERROR_TOAST_MESSAGE", "");
+        },
     },
     getters: {
         showAddTaskModal: (state) => state.showAddTaskModal,
+        errorToastMessage: (state) => state.errorToastMessage,
+        showErrorToast: (state) => state.errorToastMessage !== "",
     },
     modules: {
         auth: authModule,

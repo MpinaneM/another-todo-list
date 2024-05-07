@@ -17,9 +17,14 @@
 
         <button
             @click="deleteTask"
-            class="ml-4 w-20 bg-red-600 text-white p-2 hover:bg-red-800 rounded-md shadow-md"
+            class="ml-4 w-20 h-10 bg-red-600 text-white p-2 hover:bg-red-800 rounded-md shadow-md"
         >
-            Delete
+            <template v-if="deleteLoading">
+                <div>
+                    <Spinner :size="20" color="white" />
+                </div>
+            </template>
+            <template v-else>Delete</template>
         </button>
         <edit-task-modal
             v-if="showEditTaskModal"
@@ -32,6 +37,7 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import EditTaskModal from "@/components/EditTaskModal/EditTaskModal.vue";
+import Spinner from "@/components/Spinner/Spinner.vue";
 
 export default {
     name: "TaskItem",
@@ -53,12 +59,14 @@ export default {
     },
     data: () => ({
         showEditTaskModal: false,
+        deleteLoading: false,
     }),
     components: {
         EditTaskModal,
+        Spinner,
     },
     computed: {
-        ...mapGetters({
+        ...mapGetters("tasks", {
             tasks: "getTasks",
         }),
     },
@@ -73,24 +81,34 @@ export default {
         },
     },
     methods: {
-        ...mapActions(["UPDATE_TASK", "DELETE_TASK"]),
+        ...mapActions("tasks", ["UPDATE_TASK", "DELETE_TASK"]),
+        ...mapActions(["setErrorToastMessage"]),
         setShowEditTaskModal(show) {
             this.showEditTaskModal = show;
         },
         async deleteTask() {
             try {
+                this.deleteLoading = true;
                 await this.DELETE_TASK(this.task.id);
                 const indexToDelete = this.tasks.findIndex(
                     (task) => task.id === this.task.id
                 );
             } catch (error) {
+                this.setErrorToastMessage(
+                    "An error occurred while deeting the task"
+                );
                 console.log("ERROR", error);
+            } finally {
+                this.deleteLoading = false;
             }
         },
         async updateCompletedTask(taskUpdate) {
             try {
                 await this.UPDATE_TASK(taskUpdate);
             } catch (error) {
+                this.setErrorToastMessage(
+                    "An error occurred while updating the task"
+                );
                 console.log("ERROR", error);
             }
         },
