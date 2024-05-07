@@ -6,13 +6,16 @@
 import { mapActions, mapGetters } from "vuex";
 
 export default {
+    data: () => ({
+        timer: null,
+    }),
     computed: {
         ...mapGetters(["showErrorToast", "errorToastMessage"]),
     },
     methods: {
         ...mapActions(["hideErrorToast"]),
         hideErrorToastMessage() {
-            setTimeout(() => {
+            this.timer = setTimeout(() => {
                 this.hideErrorToast();
             }, 3000);
         },
@@ -23,6 +26,9 @@ export default {
                 this.hideErrorToastMessage();
             }
         },
+    },
+    beforeDestroy() {
+        clearTimeout(this.timer);
     },
 };
 </script>

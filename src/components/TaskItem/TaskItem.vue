@@ -95,7 +95,7 @@ export default {
                 );
             } catch (error) {
                 this.setErrorToastMessage(
-                    "An error occurred while deeting the task"
+                    "An error occurred while deleting the task"
                 );
                 console.log("ERROR", error);
             } finally {

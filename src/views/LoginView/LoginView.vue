@@ -7,7 +7,7 @@
             <p class="text-red-500 text-sm mt-4">{{ authErrorMessage }}</p>
         </template>
         <KeepAlive>
-            <component :is="modeComponent" @switchMode="switchMode" />
+            <component :is="modeComponent" />
         </KeepAlive>
         <p class="text-xs text-center">
             {{ changeModeLabel }}
